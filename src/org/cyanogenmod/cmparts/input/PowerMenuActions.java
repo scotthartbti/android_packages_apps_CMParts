@@ -31,6 +31,7 @@ import com.android.internal.util.cm.PowerMenuConstants;
 
 import org.cyanogenmod.cmparts.R;
 import org.cyanogenmod.cmparts.SettingsPreferenceFragment;
+import org.cyanogenmod.cmparts.utils.DeviceUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +55,7 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
 
     private CheckBoxPreference mRebootPref;
     private CheckBoxPreference mScreenshotPref;
+    private CheckBoxPreference mTorchPref;
     private CheckBoxPreference mAirplanePref;
     private CheckBoxPreference mUsersPref;
     private CheckBoxPreference mSettingsPref;
@@ -90,6 +92,8 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
                 mRebootPref = (CheckBoxPreference) findPreference(GLOBAL_ACTION_KEY_REBOOT);
             } else if (action.equals(GLOBAL_ACTION_KEY_SCREENSHOT)) {
                 mScreenshotPref = (CheckBoxPreference) findPreference(GLOBAL_ACTION_KEY_SCREENSHOT);
+            } else if (action.equals(GLOBAL_ACTION_KEY_TORCH)) {
+                mTorchPref = (CheckBoxPreference) findPreference(GLOBAL_ACTION_KEY_TORCH);
             } else if (action.equals(GLOBAL_ACTION_KEY_AIRPLANE)) {
                 mAirplanePref = (CheckBoxPreference) findPreference(GLOBAL_ACTION_KEY_AIRPLANE);
             } else if (action.equals(GLOBAL_ACTION_KEY_USERS)) {
@@ -122,6 +126,15 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
 
         if (mScreenshotPref != null) {
             mScreenshotPref.setChecked(settingsArrayContains(GLOBAL_ACTION_KEY_SCREENSHOT));
+        }
+
+        if (mTorchPref != null) {
+            if (!Utils.deviceSupportsFlashLight(getActivity())) {
+                getPreferenceScreen().removePreference(findPreference(GLOBAL_ACTION_KEY_TORCH));
+                mTorchPref = null;
+            } else {
+                mTorchPref.setChecked(settingsArrayContains(GLOBAL_ACTION_KEY_TORCH));
+            }
         }
 
         if (mAirplanePref != null) {
@@ -185,6 +198,10 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
         } else if (preference == mScreenshotPref) {
             value = mScreenshotPref.isChecked();
             updateUserConfig(value, GLOBAL_ACTION_KEY_SCREENSHOT);
+
+        } else if (preference == mTorchPref) {
+            value = mTorchPref.isChecked();
+            updateUserConfig(value, GLOBAL_ACTION_KEY_TORCH);
 
         } else if (preference == mAirplanePref) {
             value = mAirplanePref.isChecked();
