@@ -129,7 +129,7 @@ public class PowerMenuActions extends SettingsPreferenceFragment {
         }
 
         if (mTorchPref != null) {
-            if (!Utils.deviceSupportsFlashLight(getActivity())) {
+            if (!DeviceUtils.deviceSupportsFlashLight(getActivity())) {
                 getPreferenceScreen().removePreference(findPreference(GLOBAL_ACTION_KEY_TORCH));
                 mTorchPref = null;
             } else {
