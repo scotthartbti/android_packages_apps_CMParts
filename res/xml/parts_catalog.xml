@@ -25,10 +25,6 @@
           android:title="@string/button_pref_title"
           android:fragment="org.cyanogenmod.cmparts.input.ButtonSettings" />
 
-    <part android:key="contributors"
-          android:title="@string/contributors_cloud_fragment_title"
-          android:fragment="org.cyanogenmod.cmparts.contributors.ContributorsCloudFragment" />
-
     <part android:key="livedisplay"
           android:title="@*cyanogenmod.platform:string/live_display_title"
           android:summary="@string/live_display_summary"
