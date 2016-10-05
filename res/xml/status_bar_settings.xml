@@ -79,7 +79,7 @@
         android:entries="@array/status_bar_quick_qs_pulldown_entries"
         android:entryValues="@array/status_bar_quick_qs_pulldown_values" />
 
-    <cyanogenmod.preference.CMSystemSettingSwitchPreference
+    <cyanogenmod.preference.SystemSettingSwitchPreference
         android:key="show_su_indicator"
         android:title="@string/su_indicator"
         android:summaryOn="@string/su_indicator_summary_on"
