@@ -16,11 +16,14 @@
 package org.cyanogenmod.cmparts.statusbar;
 
 import android.content.ContentResolver;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.Preference.OnPreferenceChangeListener;
+import android.support.v7.preference.PreferenceScreen;
+import android.support.v14.preference.SwitchPreference;
 import android.text.format.DateFormat;
 import android.view.View;
 
@@ -39,6 +42,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
     private static final String STATUS_BAR_SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
     private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "qs_quick_pulldown";
+    private static final String KEY_SHOW_FOURG = "show_fourg";
 
     private static final int STATUS_BAR_BATTERY_STYLE_HIDDEN = 4;
     private static final int STATUS_BAR_BATTERY_STYLE_TEXT = 6;
@@ -48,12 +52,14 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private CMSystemSettingListPreference mStatusBarBattery;
     private CMSystemSettingListPreference mStatusBarBatteryShowPercent;
     private CMSystemSettingListPreference mQuickPulldown;
+    private SwitchPreference mShowFourG;
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.status_bar_settings);
 
+	PreferenceScreen prefSet = getPreferenceScreen();
         ContentResolver resolver = getActivity().getContentResolver();
 
         mStatusBarClock = (CMSystemSettingListPreference) findPreference(STATUS_BAR_CLOCK_STYLE);
@@ -71,6 +77,13 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mStatusBarBattery.setOnPreferenceChangeListener(this);
         enableStatusBarBatteryDependents(mStatusBarBattery.getIntValue(2));
         updatePulldownSummary(mQuickPulldown.getIntValue(0));
+
+	// Show 4G
+        mShowFourG = (SwitchPreference) prefSet.findPreference(KEY_SHOW_FOURG);
+        PackageManager pm = getActivity().getPackageManager();
+        if (!pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            prefSet.removePreference(mShowFourG);
+        }
     }
 
     @Override

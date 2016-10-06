@@ -108,6 +108,10 @@
     <string name="notification_light_automagic">Choose colors automatically</string>
     <string name="notification_light_automagic_summary">Choosing colors automatically</string>
 
+    <!-- Statusbar 4G LTE switch -->
+    <string name="show_fourg_title">Show 4G instead of LTE</string>
+    <string name="show_fourg_summary">Replaces LTE statusbar indicator with 4G</string>
+
     <!-- Lights settings, LED notification -->
     <string name="led_notification_title">Light settings</string>
     <string name="led_notification_text">LED light enabled by settings</string>

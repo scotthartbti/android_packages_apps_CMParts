@@ -104,6 +104,12 @@
         android:summaryOff="@string/su_indicator_summary_off"
         android:defaultValue="false" />
 
+    <cyanogenmod.preference.SystemSettingSwitchPreference
+        android:key="show_fourg"
+        android:title="@string/show_fourg_title"
+        android:summary="@string/show_fourg_summary"
+        android:defaultValue="false" />
+
     <!-- Double tap to sleep -->
     <cyanogenmod.preference.CMSystemSettingSwitchPreference
         android:key="double_tap_sleep_gesture"
