@@ -193,7 +193,7 @@ public class BatteryBar extends SettingsPreferenceFragment implements
             return false;
         }
 
-        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+    	public boolean onPreferenceTreeClick(Preference preference) {
             ContentResolver resolver = getActivity().getContentResolver();
             boolean value;
             if (preference == mBatteryBarChargingAnimation) {
@@ -201,7 +201,7 @@ public class BatteryBar extends SettingsPreferenceFragment implements
                 Settings.System.putInt(resolver, Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE, value ? 1 : 0);
                 return true;
             }
-            return false;
+        return super.onPreferenceTreeClick(preference);
         }
 
         private void updateBatteryBarOptions() {
