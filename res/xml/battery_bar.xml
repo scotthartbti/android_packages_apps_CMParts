@@ -15,7 +15,6 @@
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
         android:key="battery_bar"
         android:title="@string/battery_bar_title">
 
