@@ -28,5 +28,7 @@
 
     <color name="fab_ripple">#1fffffff</color><!-- 12% white -->
     <color name="fab_shape">?android:attr/colorAccent</color>
-</resources>
 
+    <color name="weather_settings_icon_tint">#B4B9BA</color>
+
+</resources>
