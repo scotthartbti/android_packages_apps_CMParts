@@ -72,6 +72,11 @@
         android:title="@string/battery_bar_title"
         android:fragment="org.cyanogenmod.cmparts.input.BatteryBar" />
 
+    <PreferenceScreen
+        android:key="ticker"
+        android:title="@string/ticker_screen_title"
+        android:fragment="org.cyanogenmod.cmparts.input.Ticker" />
+
     <cyanogenmod.preference.CMSystemSettingListPreference
         android:key="qs_quick_pulldown"
         android:title="@string/status_bar_quick_qs_pulldown_title"
