@@ -87,15 +87,29 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
     // Available custom actions to perform on a key press.
     // Must match values for KEY_HOME_LONG_PRESS_ACTION in:
     // frameworks/base/core/java/android/provider/Settings.java
-    private static final int ACTION_NOTHING = 0;
-    private static final int ACTION_MENU = 1;
-    private static final int ACTION_APP_SWITCH = 2;
-    private static final int ACTION_SEARCH = 3;
-    private static final int ACTION_VOICE_SEARCH = 4;
-    private static final int ACTION_IN_APP_SEARCH = 5;
-    private static final int ACTION_LAUNCH_CAMERA = 6;
-    private static final int ACTION_SLEEP = 7;
-    private static final int ACTION_LAST_APP = 8;
+    private enum Action {
+        NOTHING,
+        MENU,
+        APP_SWITCH,
+        SEARCH,
+        VOICE_SEARCH,
+        IN_APP_SEARCH,
+        LAUNCH_CAMERA,
+        SLEEP,
+        LAST_APP,
+        SPLIT_SCREEN;
+
+        public static Action fromIntSafe(int id) {
+            if (id < NOTHING.ordinal() || id > Action.values().length) {
+                return NOTHING;
+            }
+            return Action.values()[id];
+        }
+
+        public static Action fromSettings(ContentResolver cr, String setting, Action def) {
+            return fromIntSafe(CMSettings.System.getInt(cr, setting, def.ordinal()));
+        }
+    }
 
     // Masks for checking presence of hardware keys.
     // Must match values in frameworks/base/core/res/res/values/config.xml
@@ -247,26 +261,18 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
                 mHomeAnswerCall = null;
             }
 
-            int defaultLongPressAction = res.getInteger(
-                    com.android.internal.R.integer.config_longPressOnHomeBehavior);
-            if (defaultLongPressAction < ACTION_NOTHING ||
-                    defaultLongPressAction > ACTION_LAST_APP) {
-                defaultLongPressAction = ACTION_NOTHING;
-            }
+            Action defaultLongPressAction = Action.fromIntSafe(res.getInteger(
+                    com.android.internal.R.integer.config_longPressOnHomeBehavior));
 
-            int defaultDoubleTapAction = res.getInteger(
-                    com.android.internal.R.integer.config_doubleTapOnHomeBehavior);
-            if (defaultDoubleTapAction < ACTION_NOTHING ||
-                    defaultDoubleTapAction > ACTION_LAST_APP) {
-                defaultDoubleTapAction = ACTION_NOTHING;
-            }
+            Action defaultDoubleTapAction = Action.fromIntSafe(res.getInteger(
+                    com.android.internal.R.integer.config_doubleTapOnHomeBehavior));
 
-            int longPressAction = CMSettings.System.getInt(resolver,
+            Action longPressAction = Action.fromSettings(resolver,
                     CMSettings.System.KEY_HOME_LONG_PRESS_ACTION,
                     defaultLongPressAction);
             mHomeLongPressAction = initActionList(KEY_HOME_LONG_PRESS, longPressAction);
 
-            int doubleTapAction = CMSettings.System.getInt(resolver,
+            Action doubleTapAction = Action.fromSettings(resolver,
                     CMSettings.System.KEY_HOME_DOUBLE_TAP_ACTION,
                     defaultDoubleTapAction);
             mHomeDoubleTapAction = initActionList(KEY_HOME_DOUBLE_TAP, doubleTapAction);
@@ -290,13 +296,13 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
                 menuCategory.removePreference(findPreference(CMSettings.System.MENU_WAKE_SCREEN));
             }
 
-            int pressAction = CMSettings.System.getInt(resolver,
-                    CMSettings.System.KEY_MENU_ACTION, ACTION_MENU);
+            Action pressAction = Action.fromSettings(resolver,
+                    CMSettings.System.KEY_MENU_ACTION, Action.MENU);
             mMenuPressAction = initActionList(KEY_MENU_PRESS, pressAction);
 
-            int longPressAction = CMSettings.System.getInt(resolver,
+            Action longPressAction = Action.fromSettings(resolver,
                         CMSettings.System.KEY_MENU_LONG_PRESS_ACTION,
-                        hasAssistKey ? ACTION_NOTHING : ACTION_SEARCH);
+                        hasAssistKey ? Action.NOTHING : Action.SEARCH);
             mMenuLongPressAction = initActionList(KEY_MENU_LONG_PRESS, longPressAction);
 
             hasAnyBindableKey = true;
@@ -309,12 +315,12 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
                 assistCategory.removePreference(findPreference(CMSettings.System.ASSIST_WAKE_SCREEN));
             }
 
-            int pressAction = CMSettings.System.getInt(resolver,
-                    CMSettings.System.KEY_ASSIST_ACTION, ACTION_SEARCH);
+            Action pressAction = Action.fromSettings(resolver,
+                    CMSettings.System.KEY_ASSIST_ACTION, Action.SEARCH);
             mAssistPressAction = initActionList(KEY_ASSIST_PRESS, pressAction);
 
-            int longPressAction = CMSettings.System.getInt(resolver,
-                    CMSettings.System.KEY_ASSIST_LONG_PRESS_ACTION, ACTION_VOICE_SEARCH);
+            Action longPressAction = Action.fromSettings(resolver,
+                    CMSettings.System.KEY_ASSIST_LONG_PRESS_ACTION, Action.VOICE_SEARCH);
             mAssistLongPressAction = initActionList(KEY_ASSIST_LONG_PRESS, longPressAction);
 
             hasAnyBindableKey = true;
@@ -328,12 +334,12 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
                         CMSettings.System.APP_SWITCH_WAKE_SCREEN));
             }
 
-            int pressAction = CMSettings.System.getInt(resolver,
-                    CMSettings.System.KEY_APP_SWITCH_ACTION, ACTION_APP_SWITCH);
+            Action pressAction = Action.fromSettings(resolver,
+                    CMSettings.System.KEY_APP_SWITCH_ACTION, Action.APP_SWITCH);
             mAppSwitchPressAction = initActionList(KEY_APP_SWITCH_PRESS, pressAction);
 
-            int longPressAction = CMSettings.System.getInt(resolver,
-                    CMSettings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION, ACTION_NOTHING);
+            Action longPressAction = Action.fromSettings(resolver,
+                    CMSettings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION, Action.SPLIT_SCREEN);
             mAppSwitchLongPressAction = initActionList(KEY_APP_SWITCH_LONG_PRESS, longPressAction);
 
             hasAnyBindableKey = true;
@@ -439,12 +445,81 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
         }
     }
 
+    private ListPreference initActionList(String key, Action value) {
+        return initActionList(key, value.ordinal());
+    }
+
     private ListPreference initActionList(String key, int value) {
         ListPreference list = (ListPreference) getPreferenceScreen().findPreference(key);
         if (list == null) return null;
         list.setValue(Integer.toString(value));
         list.setSummary(list.getEntry());
         list.setOnPreferenceChangeListener(this);
+        return list;
+    }
+
+    private ListPreference initRecentsLongPressAction(String key) {
+        ListPreference list = (ListPreference) getPreferenceScreen().findPreference(key);
+        list.setOnPreferenceChangeListener(this);
+
+        // Read the componentName from Settings.Secure, this is the user's prefered setting
+        String componentString = CMSettings.Secure.getString(getContentResolver(),
+                CMSettings.Secure.RECENTS_LONG_PRESS_ACTIVITY);
+        ComponentName targetComponent = null;
+        if (componentString == null) {
+            list.setSummary(getString(R.string.hardware_keys_action_split_screen));
+        } else {
+            targetComponent = ComponentName.unflattenFromString(componentString);
+        }
+
+        // Dyanamically generate the list array,
+        // query PackageManager for all Activites that are registered for ACTION_RECENTS_LONG_PRESS
+        PackageManager pm = getPackageManager();
+        Intent intent = new Intent(cyanogenmod.content.Intent.ACTION_RECENTS_LONG_PRESS);
+        List<ResolveInfo> recentsActivities = pm.queryIntentActivities(intent,
+                PackageManager.MATCH_DEFAULT_ONLY);
+        if (recentsActivities.size() == 0) {
+            // No entries available, disable
+            list.setSummary(getString(R.string.hardware_keys_action_split_screen));
+            CMSettings.Secure.putString(getContentResolver(),
+                    CMSettings.Secure.RECENTS_LONG_PRESS_ACTIVITY, null);
+            list.setEnabled(false);
+            return list;
+        }
+
+        CharSequence[] entries = new CharSequence[recentsActivities.size() + 1];
+        CharSequence[] values = new CharSequence[recentsActivities.size() + 1];
+        // First entry is always default last app
+        entries[0] = getString(R.string.hardware_keys_action_split_screen);
+        values[0] = "";
+        list.setValue(values[0].toString());
+        int i = 1;
+        for (ResolveInfo info : recentsActivities) {
+            try {
+                // Use pm.getApplicationInfo for the label,
+                // we cannot rely on ResolveInfo that comes back from queryIntentActivities.
+                entries[i] = pm.getApplicationInfo(info.activityInfo.packageName, 0).loadLabel(pm);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.e(TAG, "Error package not found: " + info.activityInfo.packageName, e);
+                // Fallback to package name
+                entries[i] = info.activityInfo.packageName;
+            }
+
+            // Set the value to the ComponentName that will handle this intent
+            ComponentName entryComponent = new ComponentName(info.activityInfo.packageName,
+                    info.activityInfo.name);
+            values[i] = entryComponent.flattenToString();
+            if (targetComponent != null) {
+                if (entryComponent.equals(targetComponent)) {
+                    // Update the selected value and the preference summary
+                    list.setSummary(entries[i]);
+                    list.setValue(values[i].toString());
+                }
+            }
+            i++;
+        }
+        list.setEntries(entries);
+        list.setEntryValues(values);
         return list;
     }
 
