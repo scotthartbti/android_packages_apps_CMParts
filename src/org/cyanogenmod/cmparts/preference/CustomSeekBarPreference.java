@@ -14,7 +14,7 @@
  * limitations under the License
  */
 
-package com.dirtyunicorns.dutweaks.preference;
+package org.cyanogenmod.cmparts.preference;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -26,11 +26,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.support.v7.preference.*;
 
-import com.android.settings.R;
+import org.cyanogenmod.cmparts.R;
 
 public class CustomSeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
     private final String TAG = getClass().getName();
-    private static final String SETTINGS_NS = "http://schemas.android.com/apk/res/com.android.settings";
+    private static final String CMPARTS = "http://schemas.android.com/apk/res/org.cyanogenmod.cmsettings";
     private static final String ANDROIDNS = "http://schemas.android.com/apk/res/android";
     private static final int DEFAULT_VALUE = 50;
 
@@ -50,10 +50,10 @@ public class CustomSeekBarPreference extends Preference implements SeekBar.OnSee
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.CustomSeekBarPreference);
 
-        mMax = attrs.getAttributeIntValue(SETTINGS_NS, "max", 100);
-        mMin = attrs.getAttributeIntValue(SETTINGS_NS, "min", 0);
+        mMax = attrs.getAttributeIntValue(CMPARTS, "max", 100);
+        mMin = attrs.getAttributeIntValue(CMPARTS, "min", 0);
         mDefaultValue = attrs.getAttributeIntValue(ANDROIDNS, "defaultValue", -1);
-        mUnits = getAttributeStringValue(attrs, SETTINGS_NS, "units", "");
+        mUnits = getAttributeStringValue(attrs, CMPARTS, "units", "");
 
         Integer id = a.getResourceId(R.styleable.CustomSeekBarPreference_units, 0);
         if (id > 0) {
@@ -61,7 +61,7 @@ public class CustomSeekBarPreference extends Preference implements SeekBar.OnSee
         }
 
         try {
-            String newInterval = attrs.getAttributeValue(SETTINGS_NS, "interval");
+            String newInterval = attrs.getAttributeValue(CMPARTS, "interval");
             if (newInterval != null)
                 mInterval = Integer.parseInt(newInterval);
         } catch (Exception e) {
