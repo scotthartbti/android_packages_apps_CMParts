@@ -139,6 +139,7 @@
     <string name="network_traffic_autohide_threshold">Inactivity threshold</string>
     <string name="network_traffic_hidearrow">Hide arrows</string>
     <string name="network_traffic_hidearrow_summary">Hide the arrows in the traffic indicators</string>
+    <string name="traffic_category">Traffic indicators</string>
 
     <!-- Statusbar 4G LTE switch -->
     <string name="show_fourg_title">Show 4G instead of LTE</string>

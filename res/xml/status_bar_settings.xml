@@ -67,6 +67,11 @@
         android:entryValues="@array/status_bar_battery_percentage_values"
         android:defaultValue="0" />
 
+    <Preference
+        android:key="traffic"
+        android:fragment="org.cyanogenmod.cmparts.input.Traffic"
+        android:title="@string/traffic_category" />
+
     <PreferenceScreen
         android:key="battery_bar"
         android:title="@string/battery_bar_title"

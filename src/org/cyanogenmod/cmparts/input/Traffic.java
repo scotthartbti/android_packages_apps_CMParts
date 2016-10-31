@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.dirtyunicorns.dutweaks.fragments;
+package org.cyanogenmod.cmparts.input;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -34,10 +34,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.android.internal.logging.MetricsProto.MetricsEvent;
-import com.android.settings.R;
-import com.android.settings.SettingsPreferenceFragment;
-import com.dirtyunicorns.dutweaks.preference.CustomSeekBarPreference;
+import org.cyanogenmod.cmparts.R;
+import org.cyanogenmod.cmparts.SettingsPreferenceFragment;
+import org.cyanogenmod.cmparts.preference.CustomSeekBarPreference;
 
 
 public class Traffic extends SettingsPreferenceFragment
@@ -120,11 +119,6 @@ public class Traffic extends SettingsPreferenceFragment
             mNetTrafficPeriod.setOnPreferenceChangeListener(this);
         }
     }
-
-    @Override
-    protected int getMetricsCategory() {
-       return MetricsEvent.DIRTYTWEAKS;
-   }
 
     private void updateNetworkTrafficState(int mIndex) {
         if (mIndex <= 0) {

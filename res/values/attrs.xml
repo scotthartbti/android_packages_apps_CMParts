@@ -56,8 +56,8 @@
     <!-- Base attributes available to CustomSeekBarPreference. -->
     <declare-styleable name="CustomSeekBarPreference">
         <attr name="interval" format="integer" />
-        <attr name="min" format="integer" />
-        <attr name="max" format="integer" />
+        <attr name="mins" format="integer" />
+        <attr name="maxs" format="integer" />
         <attr name="units" format="string|reference" />
     </declare-styleable>
 </resources>

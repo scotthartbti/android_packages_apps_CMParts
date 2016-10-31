@@ -15,9 +15,9 @@
 -->
 
 <PreferenceScreen
-    android:title="@string/network_traffic_title"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
+    android:key="traffic"
+    android:title="@string/network_traffic_title">
 
     <ListPreference
         android:key="network_traffic_state"
@@ -42,26 +42,24 @@
         android:dependency="network_traffic_state"
         android:persistent="false" />
 
-    <com.dirtyunicorns.dutweaks.preference.SystemSettingSwitchPreference
+    <cyanogenmod.preference.SystemSettingSwitchPreference
         android:key="network_traffic_autohide"
         android:title="@string/network_traffic_autohide"
         android:summary="@string/network_traffic_autohide_summary"
         android:dependency="network_traffic_state"
         android:defaultValue="false" />
 
-    <com.dirtyunicorns.dutweaks.preference.SystemSettingSwitchPreference
+    <cyanogenmod.preference.SystemSettingSwitchPreference
         android:key="network_traffic_hidearrow"
         android:title="@string/network_traffic_hidearrow"
         android:summary="@string/network_traffic_hidearrow_summary"
         android:dependency="network_traffic_state"
         android:defaultValue="false" />
 
-    <com.dirtyunicorns.dutweaks.preference.CustomSeekBarPreference
+    <org.cyanogenmod.cmparts.preference.CustomSeekBarPreference
         android:key="network_traffic_autohide_threshold"
         android:title="@string/network_traffic_autohide_threshold"
         android:max="100"
-        settings:min="0"
-        settings:units="kB/s"
         android:dependency="network_traffic_autohide"
         android:persistent="false" />
 
