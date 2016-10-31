@@ -39,7 +39,7 @@ public class CustomSeekBarPreference extends Preference implements SeekBar.OnSee
     private int mCurrentValue;
     private int mDefaultValue = -1;
     private int mMax = 100;
-    private String mUnits = "kB/s";
+    private String mUnits = "";
     private SeekBar mSeekBar;
     private TextView mTitle;
     private TextView mStatusText;
@@ -53,7 +53,7 @@ public class CustomSeekBarPreference extends Preference implements SeekBar.OnSee
         mMax = attrs.getAttributeIntValue(CMPARTS, "maxs", 100);
         mMin = attrs.getAttributeIntValue(CMPARTS, "mins", 0);
         mDefaultValue = attrs.getAttributeIntValue(ANDROIDNS, "defaultValue", -1);
-        mUnits = getAttributeStringValue(attrs, CMPARTS, "units", "");
+        mUnits = getAttributeStringValue(attrs, CMPARTS, "units", "kB/s");
 
         Integer id = a.getResourceId(R.styleable.CustomSeekBarPreference_units, 0);
         if (id > 0) {
