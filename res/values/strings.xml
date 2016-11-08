@@ -647,4 +647,18 @@
     <string name="clock_font_notoserif_italic">NotoSerif Italic</string>
     <string name="clock_font_notoserif_bold">NotoSerif Bold</string>
     <string name="clock_font_notoserif_bold_italic">NotoSerif Bold Italic</string>
+
+    <!-- Category title for Charging sounds (Power state change) specific Settings.
+         [CHAR LIMIT=40] -->
+    <string name="charging_sounds_settings_title">Charging sounds</string>
+
+    <!-- Sound settings, Charging sounds enable/disable, setting check box label -->
+    <string name="charging_sounds_enable_title">Enable</string>
+    <string name="charging_sounds_enable_summary">Play a sound when connecting or disconnecting a power source</string>
+    <!-- Sound settings, Charging sounds vibrate enable/disable, setting check box label -->
+    <string name="charging_sounds_vibrate_title">Vibrate</string>
+    <!-- Sound settings, Charging sounds ringtone selection, preference label -->
+    <string name="charging_sounds_ringtone_title">Notification sound</string>
+    <!-- Sound settings, charging sounds label for ringtone == none -->
+    <string name="charging_sounds_ringtone_silent">Silent</string>
 </resources>
