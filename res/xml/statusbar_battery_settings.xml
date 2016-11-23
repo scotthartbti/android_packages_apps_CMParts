@@ -26,6 +26,12 @@
             android:entryValues="@array/values_battery_percent"
             android:persistent="false"
             android:defaultValue="1"/>
+
+    	<PreferenceScreen
+            android:key="battery_bar"
+            android:title="@string/battery_bar_title"
+            android:fragment="org.cyanogenmod.cmparts.input.BatteryBar" />
+
         <ListPreference
             android:key="statusbar_battery_style"
             android:title="@string/battery_style_title"
