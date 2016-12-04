@@ -135,6 +135,12 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     }
 
     @Override
+    public boolean onPreferenceTreeClick(Preference preference) {
+        // If we didn't handle it, let preferences handle it.
+        return super.onPreferenceTreeClick(preference);
+    }
+
+    @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference == mStatusBarDate) {
             int statusBarDate = Integer.valueOf((String) newValue);
@@ -203,6 +209,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
             setStatusBarDateDependencies();
             return true;
         }
+        return true;
     }
 
     private void setStatusBarDateDependencies() {
