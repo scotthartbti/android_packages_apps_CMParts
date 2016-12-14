@@ -70,8 +70,8 @@ public class VolumeStreamItem extends BaseItem {
     @Override
     public View getView(LayoutInflater inflater, View convertView, ViewGroup parent) {
         View view = super.getView(inflater, convertView, parent);
-        final boolean volumeLinkNotification = Settings.System.getInt(inflater.getContext()
-                .getContentResolver(), Settings.System.VOLUME_LINK_NOTIFICATION, 1) == 1;
+        final boolean volumeLinkNotification = Settings.Secure.getInt(inflater.getContext()
+                .getContentResolver(), Settings.Secure.VOLUME_LINK_NOTIFICATION, 1) == 1;
         if (mStreamId == AudioManager.STREAM_NOTIFICATION && volumeLinkNotification) {
             view.findViewById(android.R.id.title).setEnabled(false);
             view.findViewById(android.R.id.summary).setEnabled(false);
