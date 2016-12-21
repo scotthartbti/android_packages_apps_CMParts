@@ -66,6 +66,14 @@
         android:persistent="false" />
 
     <cyanogenmod.preference.CMSystemSettingListPreference
+        android:key="clock_date_position"
+        android:title="@string/clock_date_position"
+        android:dialogTitle="@string/clock_date_position"
+        android:entries="@array/clock_date_position_entries"
+        android:entryValues="@array/clock_date_position_values"
+        android:persistent="false" />
+
+    <cyanogenmod.preference.CMSystemSettingListPreference
         android:key="status_bar_date_format"
         android:title="@string/status_bar_date_format_title"
         android:dialogTitle="@string/status_bar_date_format_title"

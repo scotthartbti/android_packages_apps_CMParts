@@ -52,6 +52,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String STATUS_BAR_AM_PM = "status_bar_am_pm";
     private static final String STATUS_BAR_DATE = "status_bar_date";
     private static final String STATUS_BAR_DATE_STYLE = "status_bar_date_style";
+    private static final String STATUS_BAR_DATE_POSITION = "clock_date_position";
     private static final String STATUS_BAR_DATE_FORMAT = "status_bar_date_format";
     private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "qs_quick_pulldown";
     private static final String KEY_SHOW_FOURG = "show_fourg";
@@ -64,6 +65,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private CMSystemSettingListPreference mStatusBarAmPm;
     private CMSystemSettingListPreference mStatusBarDate;
     private CMSystemSettingListPreference mStatusBarDateStyle;
+    private CMSystemSettingListPreference mStatusBarDatePosition;
     private CMSystemSettingListPreference mStatusBarDateFormat;
     private CMSystemSettingListPreference mQuickPulldown;
     private SwitchPreference mShowFourG;
@@ -81,6 +83,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mStatusBarAmPm = (CMSystemSettingListPreference) findPreference(STATUS_BAR_AM_PM);
         mStatusBarDate = (CMSystemSettingListPreference) findPreference(STATUS_BAR_DATE);
         mStatusBarDateStyle = (CMSystemSettingListPreference) findPreference(STATUS_BAR_DATE_STYLE);
+        mStatusBarDatePosition = (CMSystemSettingListPreference) findPreference(STATUS_BAR_DATE_POSITION);
         mStatusBarDateFormat = (CMSystemSettingListPreference) findPreference(STATUS_BAR_DATE_FORMAT);
         mQuickPulldown = (CMSystemSettingListPreference) findPreference(STATUS_BAR_QUICK_QS_PULLDOWN);
 
@@ -100,6 +103,12 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mStatusBarDateStyle.setValue(String.valueOf(dateStyle));
         mStatusBarDateStyle.setSummary(mStatusBarDateStyle.getEntry());
         mStatusBarDateStyle.setOnPreferenceChangeListener(this);
+
+        int datePosition = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_CLOCK_DATE_POSITION, 0);
+        mStatusBarDatePosition.setValue(String.valueOf(datePosition));
+        mStatusBarDatePosition.setSummary(mStatusBarDatePosition.getEntry());
+        mStatusBarDatePosition.setOnPreferenceChangeListener(this);
 
         String dateFormat = Settings.System.getString(resolver,
                 Settings.System.STATUS_BAR_DATE_FORMAT);
@@ -156,6 +165,13 @@ public class StatusBarSettings extends SettingsPreferenceFragment
             Settings.System.putInt(
                     getActivity().getContentResolver(), STATUS_BAR_DATE_STYLE, statusBarDateStyle);
             mStatusBarDateStyle.setSummary(mStatusBarDateStyle.getEntries()[index]);
+            return true;
+        } else if (preference == mStatusBarDatePosition) {
+            int statusBarDatePosition = Integer.parseInt((String) newValue);
+            int index = mStatusBarDatePosition.findIndexOfValue((String) newValue);
+            Settings.System.putInt(
+                    getActivity().getContentResolver(), Settings.System.STATUSBAR_CLOCK_DATE_POSITION, statusBarDatePosition);
+            mStatusBarDatePosition.setSummary(mStatusBarDatePosition.getEntries()[index]);
             return true;
         } else if (preference ==  mStatusBarDateFormat) {
             int index = mStatusBarDateFormat.findIndexOfValue((String) newValue);
@@ -222,10 +238,12 @@ public class StatusBarSettings extends SettingsPreferenceFragment
                 if ("0".equals(clockStyle)) {
                     mStatusBarDate.setEnabled(false);
                     mStatusBarDateStyle.setEnabled(false);
+                    mStatusBarDatePosition.setEnabled(false);
                     mStatusBarDateFormat.setEnabled(false);
                 } else {
                     mStatusBarDate.setEnabled(true);
                     mStatusBarDateStyle.setEnabled(showDate != 0);
+                    mStatusBarDatePosition.setEnabled(showDate != 0);
                     mStatusBarDateFormat.setEnabled(showDate != 0);
                 }
             }
