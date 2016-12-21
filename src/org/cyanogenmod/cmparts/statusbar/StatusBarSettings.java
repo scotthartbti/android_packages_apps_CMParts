@@ -56,6 +56,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String STATUS_BAR_DATE_FORMAT = "status_bar_date_format";
     private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "qs_quick_pulldown";
     private static final String KEY_SHOW_FOURG = "show_fourg";
+    private static final String STATUS_BAR_CLOCK_FONT_STYLE = "font_style";
 
     public static final int CLOCK_DATE_STYLE_LOWERCASE = 1;
     public static final int CLOCK_DATE_STYLE_UPPERCASE = 2;
@@ -69,6 +70,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private CMSystemSettingListPreference mStatusBarDateFormat;
     private CMSystemSettingListPreference mQuickPulldown;
     private SwitchPreference mShowFourG;
+    private CMSystemSettingListPreference mFontStyle;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -86,6 +88,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mStatusBarDatePosition = (CMSystemSettingListPreference) findPreference(STATUS_BAR_DATE_POSITION);
         mStatusBarDateFormat = (CMSystemSettingListPreference) findPreference(STATUS_BAR_DATE_FORMAT);
         mQuickPulldown = (CMSystemSettingListPreference) findPreference(STATUS_BAR_QUICK_QS_PULLDOWN);
+        mFontStyle = (CMSystemSettingListPreference) findPreference(STATUS_BAR_CLOCK_FONT_STYLE);
 
         if (DateFormat.is24HourFormat(getActivity())) {
             mStatusBarAmPm.setEnabled(false);
@@ -109,6 +112,12 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mStatusBarDatePosition.setValue(String.valueOf(datePosition));
         mStatusBarDatePosition.setSummary(mStatusBarDatePosition.getEntry());
         mStatusBarDatePosition.setOnPreferenceChangeListener(this);
+
+        int fontStyle = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_CLOCK_FONT_STYLE, 0);
+        mFontStyle.setValue(String.valueOf(fontStyle));
+        mFontStyle.setSummary(mFontStyle.getEntry());
+        mFontStyle.setOnPreferenceChangeListener(this);
 
         String dateFormat = Settings.System.getString(resolver,
                 Settings.System.STATUS_BAR_DATE_FORMAT);
@@ -172,6 +181,13 @@ public class StatusBarSettings extends SettingsPreferenceFragment
             Settings.System.putInt(
                     getActivity().getContentResolver(), Settings.System.STATUSBAR_CLOCK_DATE_POSITION, statusBarDatePosition);
             mStatusBarDatePosition.setSummary(mStatusBarDatePosition.getEntries()[index]);
+            return true;
+        } else if (preference == mFontStyle) {
+            int clockFontStyle = Integer.parseInt((String) newValue);
+            int index = mFontStyle.findIndexOfValue((String) newValue);
+            Settings.System.putInt(
+                    getActivity().getContentResolver(), Settings.System.STATUSBAR_CLOCK_FONT_STYLE, clockFontStyle);
+            mFontStyle.setSummary(mFontStyle.getEntries()[index]);
             return true;
         } else if (preference ==  mStatusBarDateFormat) {
             int index = mStatusBarDateFormat.findIndexOfValue((String) newValue);
