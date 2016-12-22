@@ -57,6 +57,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "qs_quick_pulldown";
     private static final String KEY_SHOW_FOURG = "show_fourg";
     private static final String STATUS_BAR_CLOCK_FONT_STYLE = "font_style";
+    private static final String STATUS_BAR_CLOCK_FONT_SIZE  = "status_bar_clock_font_size";
 
     public static final int CLOCK_DATE_STYLE_LOWERCASE = 1;
     public static final int CLOCK_DATE_STYLE_UPPERCASE = 2;
@@ -71,6 +72,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private CMSystemSettingListPreference mQuickPulldown;
     private SwitchPreference mShowFourG;
     private CMSystemSettingListPreference mFontStyle;
+    private CMSystemSettingListPreference mStatusBarClockFontSize;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -89,6 +91,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mStatusBarDateFormat = (CMSystemSettingListPreference) findPreference(STATUS_BAR_DATE_FORMAT);
         mQuickPulldown = (CMSystemSettingListPreference) findPreference(STATUS_BAR_QUICK_QS_PULLDOWN);
         mFontStyle = (CMSystemSettingListPreference) findPreference(STATUS_BAR_CLOCK_FONT_STYLE);
+        mStatusBarClockFontSize = (CMSystemSettingListPreference) findPreference(STATUS_BAR_CLOCK_FONT_SIZE);
 
         if (DateFormat.is24HourFormat(getActivity())) {
             mStatusBarAmPm.setEnabled(false);
@@ -118,6 +121,12 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mFontStyle.setValue(String.valueOf(fontStyle));
         mFontStyle.setSummary(mFontStyle.getEntry());
         mFontStyle.setOnPreferenceChangeListener(this);
+
+        int fontSize = Settings.System.getInt(resolver,
+                Settings.System.STATUSBAR_CLOCK_FONT_SIZE, 14);
+        mStatusBarClockFontSize.setValue(String.valueOf(fontSize));
+        mStatusBarClockFontSize.setSummary(mStatusBarClockFontSize.getEntry());
+        mStatusBarClockFontSize.setOnPreferenceChangeListener(this);
 
         String dateFormat = Settings.System.getString(resolver,
                 Settings.System.STATUS_BAR_DATE_FORMAT);
@@ -188,6 +197,13 @@ public class StatusBarSettings extends SettingsPreferenceFragment
             Settings.System.putInt(
                     getActivity().getContentResolver(), Settings.System.STATUSBAR_CLOCK_FONT_STYLE, clockFontStyle);
             mFontStyle.setSummary(mFontStyle.getEntries()[index]);
+            return true;
+        } else if (preference == mStatusBarClockFontSize) {
+            int clockFontSize = Integer.parseInt((String) newValue);
+            int index = mStatusBarClockFontSize.findIndexOfValue((String) newValue);
+            Settings.System.putInt(
+                    getActivity().getContentResolver(), Settings.System.STATUSBAR_CLOCK_FONT_SIZE, clockFontSize);
+            mStatusBarClockFontSize.setSummary(mStatusBarClockFontSize.getEntries()[index]);
             return true;
         } else if (preference ==  mStatusBarDateFormat) {
             int index = mStatusBarDateFormat.findIndexOfValue((String) newValue);
