@@ -148,6 +148,9 @@
     <!-- Pa Battery -->
     <string name="status_bar_battery_style_solid">Solid</string>
 
+    <!-- Aicp Battery -->
+    <string name="status_bar_battery_style_aicp">Tha Battery</string>
+
     <!-- Lights settings, LED notification -->
     <string name="led_notification_title">Light settings</string>
     <string name="led_notification_text">LED light enabled by settings</string>
