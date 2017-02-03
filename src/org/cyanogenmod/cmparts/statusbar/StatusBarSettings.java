@@ -80,8 +80,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
         mStatusBarClock = (CMSystemSettingListPreference) findPreference(STATUS_BAR_CLOCK_STYLE);
         mStatusBarClock.setOnPreferenceChangeListener(this);
-        mStatusBarBatteryShowPercent =
-                (CMSystemSettingListPreference) findPreference(STATUS_BAR_SHOW_BATTERY_PERCENT);
 
         mStatusBarAmPm = (CMSystemSettingListPreference) findPreference(STATUS_BAR_AM_PM);
         if (DateFormat.is24HourFormat(getActivity())) {
@@ -183,9 +181,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment
             mStatusBarDate.setSummary(mStatusBarDate.getEntries()[index]);
             setStatusBarDateDependencies();
             return true;
-	} else if (preference == mQuickPulldown) {
-            updateQuickPulldownSummary(newValue);
-            return true;
         } else if (preference == mStatusBarDateStyle) {
             int statusBarDateStyle = Integer.parseInt((String) newValue);
             int index = mStatusBarDateStyle.findIndexOfValue((String) newValue);
@@ -262,8 +257,14 @@ public class StatusBarSettings extends SettingsPreferenceFragment
                 }
             }
             return true;
-        }
-        return true;
+	} else {
+            int value = Integer.parseInt((String) newValue);
+            if (preference == mQuickPulldown) {
+                updateQuickPulldownSummary(value);
+            }
+
+            return true;
+	}
     }
 
     private void setStatusBarDateDependencies() {
