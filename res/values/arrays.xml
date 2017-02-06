@@ -91,19 +91,6 @@
         <item>2000</item>
     </string-array>
 
-    <!-- show battery percent -->
-    <string-array name="entries_battery_percent" translatable="false">
-        <item>@string/battery_percent_none</item>
-        <item>@string/battery_percent_always</item>
-        <!--<item>@string/battery_percent_expanded</item>-->
-    </string-array>
-
-    <string-array name="values_battery_percent" translatable="false">
-        <item>0</item>
-        <item>1</item>
-        <!--<item>2</item>-->
-    </string-array>
-
     <!-- Hardware key rebinding -->
     <string-array name="hardware_keys_action_entries" translatable="false">
         <item>@string/hardware_keys_action_nothing</item>
@@ -315,6 +302,7 @@
         <item>@string/status_bar_battery_style_icon_portrait</item>
         <item>@string/status_bar_battery_style_icon_landscape</item>
         <item>@string/status_bar_battery_style_circle</item>
+	<item>@string/status_bar_battery_style_solid</item>
         <item>@string/status_bar_battery_style_text</item>
         <item>@string/status_bar_battery_style_hidden</item>
     </string-array>
@@ -323,6 +311,7 @@
         <item>0</item>
         <item>5</item>
         <item>2</item>
+	<item>7</item>
         <item>6</item>
         <item>4</item>
     </string-array>

@@ -50,10 +50,15 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String STATUS_BAR_DATE_STYLE = "status_bar_date_style";
     private static final String STATUS_BAR_DATE_POSITION = "clock_date_position";
     private static final String STATUS_BAR_DATE_FORMAT = "status_bar_date_format";
+    private static final String STATUS_BAR_BATTERY_STYLE = "status_bar_battery_style";
+    private static final String STATUS_BAR_SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
     private static final String STATUS_BAR_QUICK_QS_PULLDOWN = "qs_quick_pulldown";
     private static final String KEY_SHOW_FOURG = "show_fourg";
     private static final String STATUS_BAR_CLOCK_FONT_STYLE = "font_style";
     private static final String STATUS_BAR_CLOCK_FONT_SIZE  = "status_bar_clock_font_size";
+
+    private static final int STATUS_BAR_BATTERY_STYLE_HIDDEN = 4;
+    private static final int STATUS_BAR_BATTERY_STYLE_TEXT = 6;
 
     public static final int CLOCK_DATE_STYLE_LOWERCASE = 1;
     public static final int CLOCK_DATE_STYLE_UPPERCASE = 2;
@@ -66,6 +71,8 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private CMSystemSettingListPreference mStatusBarDateStyle;
     private CMSystemSettingListPreference mStatusBarDatePosition;
     private CMSystemSettingListPreference mStatusBarDateFormat;
+    private CMSystemSettingListPreference mStatusBarBattery;
+    private CMSystemSettingListPreference mStatusBarBatteryShowPercent;
     private SwitchPreference mShowFourG;
     private CMSystemSettingListPreference mFontStyle;
     private CMSystemSettingListPreference mStatusBarClockFontSize;
@@ -80,6 +87,9 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
         mStatusBarClock = (CMSystemSettingListPreference) findPreference(STATUS_BAR_CLOCK_STYLE);
         mStatusBarClock.setOnPreferenceChangeListener(this);
+
+	mStatusBarBatteryShowPercent =
+	    (CMSystemSettingListPreference) findPreference(STATUS_BAR_SHOW_BATTERY_PERCENT);
 
         mStatusBarAmPm = (CMSystemSettingListPreference) findPreference(STATUS_BAR_AM_PM);
         if (DateFormat.is24HourFormat(getActivity())) {
@@ -145,6 +155,11 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         }
 
         parseClockDateFormats();
+
+	mStatusBarBattery =
+                (CMSystemSettingListPreference) findPreference(STATUS_BAR_BATTERY_STYLE);
+        mStatusBarBattery.setOnPreferenceChangeListener(this);
+	enableStatusBarBatteryDependents(mStatusBarBattery.getIntValue(2));
 
         mQuickPulldown =
                 (CMSystemSettingListPreference) findPreference(STATUS_BAR_QUICK_QS_PULLDOWN);
@@ -261,10 +276,18 @@ public class StatusBarSettings extends SettingsPreferenceFragment
             int value = Integer.parseInt((String) newValue);
             if (preference == mQuickPulldown) {
                 updateQuickPulldownSummary(value);
-            }
+            } else if (preference == mStatusBarBattery) {
+                enableStatusBarBatteryDependents(value);
+	    }
 
             return true;
 	}
+    }
+
+    private void enableStatusBarBatteryDependents(int batteryIconStyle) {
+        mStatusBarBatteryShowPercent.setEnabled(
+                batteryIconStyle != STATUS_BAR_BATTERY_STYLE_HIDDEN
+                && batteryIconStyle != STATUS_BAR_BATTERY_STYLE_TEXT);
     }
 
     private void setStatusBarDateDependencies() {
