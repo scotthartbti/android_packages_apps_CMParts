@@ -24,8 +24,10 @@ import android.content.pm.PackageManager;
 import android.content.DialogInterface;
 
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.Preference.OnPreferenceChangeListener;
 import android.support.v7.preference.PreferenceScreen;
@@ -56,6 +58,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String KEY_SHOW_FOURG = "show_fourg";
     private static final String STATUS_BAR_CLOCK_FONT_STYLE = "font_style";
     private static final String STATUS_BAR_CLOCK_FONT_SIZE  = "status_bar_clock_font_size";
+    private static final String PREF_STATUS_BAR_WEATHER = "status_bar_weather";
 
     private static final int STATUS_BAR_BATTERY_STYLE_HIDDEN = 4;
     private static final int STATUS_BAR_BATTERY_STYLE_TEXT = 6;
@@ -76,6 +79,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private SwitchPreference mShowFourG;
     private CMSystemSettingListPreference mFontStyle;
     private CMSystemSettingListPreference mStatusBarClockFontSize;
+    private ListPreference mStatusBarWeather;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,6 +170,20 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mQuickPulldown.setOnPreferenceChangeListener(this);
         updateQuickPulldownSummary(mQuickPulldown.getIntValue(0));
 
+
+        // Status bar weather
+        mStatusBarWeather = (ListPreference) findPreference(PREF_STATUS_BAR_WEATHER);
+        int temperatureShow = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0,
+                UserHandle.USER_CURRENT);
+        mStatusBarWeather.setValue(String.valueOf(temperatureShow));
+        if (temperatureShow == 0) {
+            mStatusBarWeather.setSummary(R.string.statusbar_weather_summary);
+        } else {
+            mStatusBarWeather.setSummary(mStatusBarWeather.getEntry());
+        }
+        mStatusBarWeather.setOnPreferenceChangeListener(this);
+
         setStatusBarDateDependencies();
     }
 
@@ -195,6 +213,19 @@ public class StatusBarSettings extends SettingsPreferenceFragment
                     getActivity().getContentResolver(), STATUS_BAR_DATE, statusBarDate);
             mStatusBarDate.setSummary(mStatusBarDate.getEntries()[index]);
             setStatusBarDateDependencies();
+            return true;
+	} else if (preference == mStatusBarWeather) {
+            int temperatureShow = Integer.valueOf((String) newValue);
+            int index = mStatusBarWeather.findIndexOfValue((String) newValue);
+            Settings.System.putIntForUser(resolver,
+                    Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP,
+                    temperatureShow, UserHandle.USER_CURRENT);
+            if (temperatureShow == 0) {
+                mStatusBarWeather.setSummary(R.string.statusbar_weather_summary);
+            } else {
+                mStatusBarWeather.setSummary(
+                        mStatusBarWeather.getEntries()[index]);
+            }
             return true;
         } else if (preference == mStatusBarDateStyle) {
             int statusBarDateStyle = Integer.parseInt((String) newValue);
