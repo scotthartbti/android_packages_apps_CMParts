@@ -217,7 +217,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 	} else if (preference == mStatusBarWeather) {
             int temperatureShow = Integer.valueOf((String) newValue);
             int index = mStatusBarWeather.findIndexOfValue((String) newValue);
-            Settings.System.putIntForUser(resolver,
+            Settings.System.putIntForUser(getActivity().getContentResolver(),
                     Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP,
                     temperatureShow, UserHandle.USER_CURRENT);
             if (temperatureShow == 0) {
