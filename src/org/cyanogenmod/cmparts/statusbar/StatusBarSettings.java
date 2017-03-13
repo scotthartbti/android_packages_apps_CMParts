@@ -59,6 +59,8 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String STATUS_BAR_CLOCK_FONT_STYLE = "font_style";
     private static final String STATUS_BAR_CLOCK_FONT_SIZE  = "status_bar_clock_font_size";
     private static final String PREF_STATUS_BAR_WEATHER = "status_bar_weather";
+    private static final String PREF_CATEGORY_INDICATORS = "pref_category_indicators";
+    private static final String WEATHER_SERVICE_PACKAGE = "org.omnirom.omnijaws";
 
     private static final int STATUS_BAR_BATTERY_STYLE_HIDDEN = 4;
     private static final int STATUS_BAR_BATTERY_STYLE_TEXT = 6;
@@ -88,6 +90,8 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
 	PreferenceScreen prefSet = getPreferenceScreen();
         ContentResolver resolver = getActivity().getContentResolver();
+	PreferenceCategory categoryIndicators =
+                (PreferenceCategory) prefSet.findPreference(PREF_CATEGORY_INDICATORS);
 
         mStatusBarClock = (CMSystemSettingListPreference) findPreference(STATUS_BAR_CLOCK_STYLE);
         mStatusBarClock.setOnPreferenceChangeListener(this);
@@ -155,7 +159,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mShowFourG = (SwitchPreference) prefSet.findPreference(KEY_SHOW_FOURG);
         PackageManager pm = getActivity().getPackageManager();
         if (!pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-            prefSet.removePreference(mShowFourG);
+            categoryIndicators.removePreference(mShowFourG);
         }
 
         parseClockDateFormats();
@@ -172,17 +176,21 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
 
         // Status bar weather
-        mStatusBarWeather = (ListPreference) findPreference(PREF_STATUS_BAR_WEATHER);
-        int temperatureShow = Settings.System.getIntForUser(resolver,
+        mStatusBarWeather = (ListPreference) prefSet.findPreference(PREF_STATUS_BAR_WEATHER);
+        if (mStatusBarWeather != null && (!Helpers.isPackageInstalled(WEATHER_SERVICE_PACKAGE, pm))) {
+            categoryIndicators.removePreference(mStatusBarWeather);
+        } else {
+            int temperatureShow = Settings.System.getIntForUser(resolver,
                 Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0,
                 UserHandle.USER_CURRENT);
         mStatusBarWeather.setValue(String.valueOf(temperatureShow));
-        if (temperatureShow == 0) {
-            mStatusBarWeather.setSummary(R.string.statusbar_weather_summary);
-        } else {
-            mStatusBarWeather.setSummary(mStatusBarWeather.getEntry());
+            if (temperatureShow == 0) {
+                mStatusBarWeather.setSummary(R.string.statusbar_weather_summary);
+            } else {
+                mStatusBarWeather.setSummary(mStatusBarWeather.getEntry());
+            }
+            mStatusBarWeather.setOnPreferenceChangeListener(this);
         }
-        mStatusBarWeather.setOnPreferenceChangeListener(this);
 
         setStatusBarDateDependencies();
     }

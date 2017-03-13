@@ -37,6 +37,8 @@
     <string name="disabled">Disabled</string>
     <string name="enabled">Enabled</string>
 
+    <string name="misc">Misc</string>
+
     <!-- Privacy Settings Header item -->
     <string name="privacy_settings_title">Privacy</string>
     <string name="privacy_settings_category" translatable="false">CyanogenMod</string>
