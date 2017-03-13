@@ -551,6 +551,9 @@
     <string name="status_bar_battery_percentage_text_inside">Inside the icon</string>
     <string name="status_bar_battery_percentage_text_next">Next to the icon</string>
 
+    <!-- Status bar - Battery charging color -->
+    <string name="battery_charging_color_title">Battery charging color</string>
+
     <!-- Status bar - icon blacklist -->
     <string name="status_bar_icons_title">Status bar icons</string>
     <string name="status_bar_icons_summary">Control which status bar icons are shown</string>

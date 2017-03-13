@@ -22,7 +22,7 @@ import android.app.DialogFragment;
 import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.content.DialogInterface;
-
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -43,6 +43,7 @@ import cyanogenmod.preference.CMSystemSettingListPreference;
 
 import org.cyanogenmod.cmparts.R;
 import org.cyanogenmod.cmparts.utils.DeviceUtils;
+import org.cyanogenmod.cmparts.notificationlight.ApplicationLightPreference;
 import org.cyanogenmod.cmparts.SettingsPreferenceFragment;
 
 public class StatusBarSettings extends SettingsPreferenceFragment
@@ -63,6 +64,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String PREF_STATUS_BAR_WEATHER = "status_bar_weather";
     private static final String PREF_CATEGORY_INDICATORS = "pref_category_indicators";
     private static final String WEATHER_SERVICE_PACKAGE = "org.omnirom.omnijaws";
+    private static final String STATUS_BAR_BATTERY_BAR_CHARGING_COLOR = "battery_charging_color";
 
     private static final int STATUS_BAR_BATTERY_STYLE_HIDDEN = 4;
     private static final int STATUS_BAR_BATTERY_STYLE_TEXT = 6;
@@ -84,6 +86,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private CMSystemSettingListPreference mFontStyle;
     private CMSystemSettingListPreference mStatusBarClockFontSize;
     private ListPreference mStatusBarWeather;
+    private ApplicationLightPreference mStatusBarBatteryChargingColor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,7 +169,15 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
         parseClockDateFormats();
 
-	mStatusBarBattery =
+        // Low, Medium and full color preferences
+        mStatusBarBatteryChargingColor = (ApplicationLightPreference) findPreference(STATUS_BAR_BATTERY_BAR_CHARGING_COLOR);
+        int batteryChargingColor = Settings.System.getInt(resolver,
+                    Settings.System.BATTERY_CHARGING_COLOR, Color.WHITE);
+        mStatusBarBatteryChargingColor.setColor(batteryChargingColor);
+        mStatusBarBatteryChargingColor.setOnPreferenceChangeListener(this);
+
+
+        mStatusBarBattery =
                 (CMSystemSettingListPreference) findPreference(STATUS_BAR_BATTERY_STYLE);
         mStatusBarBattery.setOnPreferenceChangeListener(this);
 	enableStatusBarBatteryDependents(mStatusBarBattery.getIntValue(2));
@@ -313,7 +324,11 @@ public class StatusBarSettings extends SettingsPreferenceFragment
                 }
             }
             return true;
-	} else {
+        } else if (preference == mStatusBarBatteryChargingColor) {
+            ApplicationLightPreference chargingColorPref = (ApplicationLightPreference) preference;
+            updateChargingColorValue(chargingColorPref.getColor());
+            return true;
+        } else {
             int value = Integer.parseInt((String) newValue);
             if (preference == mQuickPulldown) {
                 updateQuickPulldownSummary(value);
@@ -329,6 +344,8 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mStatusBarBatteryShowPercent.setEnabled(
                 batteryIconStyle != STATUS_BAR_BATTERY_STYLE_HIDDEN
                 && batteryIconStyle != STATUS_BAR_BATTERY_STYLE_TEXT);
+        mStatusBarBatteryChargingColor.setEnabled(
+                batteryIconStyle != STATUS_BAR_BATTERY_STYLE_HIDDEN);
     }
 
     private void setStatusBarDateDependencies() {
@@ -381,5 +398,11 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mQuickPulldown.setSummary(value == 0
                 ? R.string.status_bar_quick_qs_pulldown_off
                 : R.string.status_bar_quick_qs_pulldown_summary);
+    }
+
+    protected void updateChargingColorValue(Integer color) {
+        ContentResolver resolver = getActivity().getContentResolver();
+
+        Settings.System.putInt(resolver, Settings.System.BATTERY_CHARGING_COLOR, color);
     }
 }
