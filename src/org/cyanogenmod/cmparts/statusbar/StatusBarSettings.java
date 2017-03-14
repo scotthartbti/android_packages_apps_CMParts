@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.Preference.OnPreferenceChangeListener;
@@ -41,6 +42,7 @@ import java.util.Date;
 import cyanogenmod.preference.CMSystemSettingListPreference;
 
 import org.cyanogenmod.cmparts.R;
+import org.cyanogenmod.cmparts.utils.DeviceUtils;
 import org.cyanogenmod.cmparts.SettingsPreferenceFragment;
 
 public class StatusBarSettings extends SettingsPreferenceFragment
@@ -177,7 +179,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
         // Status bar weather
         mStatusBarWeather = (ListPreference) prefSet.findPreference(PREF_STATUS_BAR_WEATHER);
-        if (mStatusBarWeather != null && (!Helpers.isPackageInstalled(WEATHER_SERVICE_PACKAGE, pm))) {
+        if (mStatusBarWeather != null && (!DeviceUtils.isPackageInstalled(WEATHER_SERVICE_PACKAGE, pm))) {
             categoryIndicators.removePreference(mStatusBarWeather);
         } else {
             int temperatureShow = Settings.System.getIntForUser(resolver,

@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
@@ -29,6 +30,7 @@ import android.hardware.camera2.CameraManager;
 import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
 import android.os.Build;
+import android.util.Log;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -38,6 +40,8 @@ import org.cyanogenmod.cmparts.input.ButtonSettings;
 
 public class DeviceUtils {
 
+    private static final String TAG = Thread.currentThread().getStackTrace()[1].getClassName();
+
     /* returns whether the device has volume rocker or not. */
     public static boolean hasVolumeRocker(Context context) {
         final int deviceKeys = context.getResources().getInteger(
@@ -45,18 +49,16 @@ public class DeviceUtils {
         return (deviceKeys & ButtonSettings.KEY_MASK_VOLUME) != 0;
     }
 
-    public static boolean isPackageInstalled(Context context, String pkg, boolean ignoreState) {
-        if (pkg != null) {
-            try {
-                PackageInfo pi = context.getPackageManager().getPackageInfo(pkg, 0);
-                if (!pi.applicationInfo.enabled && !ignoreState) {
-                    return false;
-                }
-            } catch (PackageManager.NameNotFoundException e) {
+    public static boolean isPackageInstalled(String packageName, PackageManager pm) {
+        try {
+            String mVersion = pm.getPackageInfo(packageName, 0).versionName;
+            if (mVersion == null) {
                 return false;
             }
+        } catch (NameNotFoundException notFound) {
+            Log.i(TAG, "Package could not be found!", notFound);
+            return false;
         }
-
         return true;
     }
 
