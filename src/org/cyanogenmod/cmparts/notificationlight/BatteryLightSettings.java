@@ -45,6 +45,8 @@ public class BatteryLightSettings extends SettingsPreferenceFragment implements
     private static final String REALLY_FULL_COLOR_PREF = "really_full_color";
     private static final String LIGHT_ENABLED_PREF = "battery_light_enabled";
     private static final String PULSE_ENABLED_PREF = "battery_light_pulse";
+    private static final String BLEND_COLOR_PREF = "battery_light_blend_color";
+    private static final String BLEND_COLOR_REVERSE_PREF = "battery_light_blend_color_reverse";
 
     private PreferenceGroup mColorPrefs;
     private ApplicationLightPreference mLowColorPref;
@@ -53,6 +55,8 @@ public class BatteryLightSettings extends SettingsPreferenceFragment implements
     private ApplicationLightPreference mReallyFullColorPref;
     private CMSystemSettingSwitchPreference mLightEnabledPref;
     private CMSystemSettingSwitchPreference mPulseEnabledPref;
+    private CMSystemSettingSwitchPreference mBlendColorPref;
+    private CMSystemSettingSwitchPreference mBlendColorReversePref;
 
     private static final int MENU_RESET = Menu.FIRST;
 
@@ -93,6 +97,13 @@ public class BatteryLightSettings extends SettingsPreferenceFragment implements
 
             mReallyFullColorPref = (ApplicationLightPreference) prefSet.findPreference(REALLY_FULL_COLOR_PREF);
             mReallyFullColorPref.setOnPreferenceChangeListener(this);
+
+            mBlendColorPref = (CMSystemSettingSwitchPreference) prefSet.findPreference(BLEND_COLOR_PREF);
+            mBlendColorPref.setOnPreferenceChangeListener(this);
+
+            mBlendColorReversePref =
+                    (CMSystemSettingSwitchPreference) prefSet.findPreference(BLEND_COLOR_REVERSE_PREF);
+            mBlendColorReversePref.setOnPreferenceChangeListener(this);
         } else {
             prefSet.removePreference(prefSet.findPreference("colors_list"));
             resetColors();
@@ -134,6 +145,18 @@ public class BatteryLightSettings extends SettingsPreferenceFragment implements
                     res.getInteger(com.android.internal.R.integer.config_notificationsBatteryFullARGB));
             mReallyFullColorPref.setAllValues(reallyFullColor, 0, 0, false);
         }
+
+        if (mBlendColorPref != null) {
+            mBlendColorPref.setChecked(Settings.System.getInt(resolver,
+                    Settings.System.BATTERY_LIGHT_BLEND_COLOR, 0) != 0);
+        }
+
+        if (mBlendColorReversePref != null) {
+            mBlendColorReversePref.setChecked(Settings.System.getInt(resolver,
+                    Settings.System.BATTERY_LIGHT_BLEND_COLOR_REVERSE, 0) != 0);
+        }
+
+        setBlendColorDependencies();
     }
 
     /**
@@ -203,10 +226,26 @@ public class BatteryLightSettings extends SettingsPreferenceFragment implements
         if (mPulseEnabledPref != null) mPulseEnabledPref.setChecked(batteryLightPulseEnabled);
 
         resetColors();
+
+        if (mBlendColorPref != null) mBlendColorPref.setChecked(false);
+        if (mBlendColorReversePref != null) mBlendColorReversePref.setChecked(false);
+        setBlendColorDependencies();
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object objValue) {
+        if (preference == mBlendColorPref) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.BATTERY_LIGHT_BLEND_COLOR,
+                    ((boolean) objValue) ? 1 : 0);
+            setBlendColorDependencies((boolean) objValue);
+            return true;
+        } else if (preference == mBlendColorReversePref) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.BATTERY_LIGHT_BLEND_COLOR_REVERSE,
+                    ((boolean) objValue) ? 1 : 0);
+            return true;
+        }
         ApplicationLightPreference lightPref = (ApplicationLightPreference) preference;
         updateValues(lightPref.getKey(), lightPref.getColor());
         return true;
@@ -222,4 +261,14 @@ public class BatteryLightSettings extends SettingsPreferenceFragment implements
             return context.getString(R.string.disabled);
         }
     };
+
+    private void setBlendColorDependencies() {
+        setBlendColorDependencies(mBlendColorPref.isChecked());
+    }
+
+    private void setBlendColorDependencies(boolean blendColors) {
+        boolean enabled = !blendColors;
+        if (mMediumColorPref != null) mMediumColorPref.setEnabled(enabled);
+        if (mFullColorPref != null) mFullColorPref.setEnabled(enabled);
+    }
 }
