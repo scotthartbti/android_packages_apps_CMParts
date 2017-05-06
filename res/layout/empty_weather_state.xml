@@ -49,6 +49,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/weather_settings_add_weather_provider"
                 android:textAllCaps="true"
-                android:textColor="@*android:color/material_deep_teal_500" />
+                android:textColor="?android:attr/colorAccent" />
     </LinearLayout>
 </FrameLayout>
