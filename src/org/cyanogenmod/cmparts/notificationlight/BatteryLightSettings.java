@@ -263,7 +263,9 @@ public class BatteryLightSettings extends SettingsPreferenceFragment implements
     };
 
     private void setBlendColorDependencies() {
-        setBlendColorDependencies(mBlendColorPref.isChecked());
+        if (mBlendColorPref != null) {
+            setBlendColorDependencies(mBlendColorPref.isChecked());
+        }
     }
 
     private void setBlendColorDependencies(boolean blendColors) {
