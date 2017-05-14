@@ -62,9 +62,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private static final String KEY_SHOW_FOURG = "show_fourg";
     private static final String STATUS_BAR_CLOCK_FONT_STYLE = "font_style";
     private static final String STATUS_BAR_CLOCK_FONT_SIZE  = "status_bar_clock_font_size";
-    private static final String PREF_STATUS_BAR_WEATHER = "status_bar_weather";
     private static final String PREF_CATEGORY_INDICATORS = "pref_category_indicators";
-    private static final String WEATHER_SERVICE_PACKAGE = "org.omnirom.omnijaws";
     private static final String STATUS_BAR_BATTERY_BAR_CHARGING_COLOR = "battery_charging_color";
 
     private static final int STATUS_BAR_BATTERY_STYLE_HIDDEN = 4;
@@ -89,7 +87,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private SwitchPreference mShowFourG;
     private CMSystemSettingListPreference mFontStyle;
     private CMSystemSettingListPreference mStatusBarClockFontSize;
-    private ListPreference mStatusBarWeather;
     private ColorPickerPreference mStatusBarBatteryChargingColor;
 
     @Override
@@ -186,23 +183,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         mQuickPulldown.setOnPreferenceChangeListener(this);
         updateQuickPulldownSummary(mQuickPulldown.getIntValue(0));
 
-        // Status bar weather
-        mStatusBarWeather = (ListPreference) prefSet.findPreference(PREF_STATUS_BAR_WEATHER);
-        if (mStatusBarWeather != null && (!DeviceUtils.isPackageInstalled(WEATHER_SERVICE_PACKAGE, pm))) {
-            categoryIndicators.removePreference(mStatusBarWeather);
-        } else {
-            int temperatureShow = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP, 0,
-                UserHandle.USER_CURRENT);
-        mStatusBarWeather.setValue(String.valueOf(temperatureShow));
-            if (temperatureShow == 0) {
-                mStatusBarWeather.setSummary(R.string.statusbar_weather_summary);
-            } else {
-                mStatusBarWeather.setSummary(mStatusBarWeather.getEntry());
-            }
-            mStatusBarWeather.setOnPreferenceChangeListener(this);
-        }
-
         mStatusBarBatteryChargingColor = (ColorPickerPreference) findPreference(STATUS_BAR_BATTERY_BAR_CHARGING_COLOR);
         mStatusBarBatteryChargingColor.setOnPreferenceChangeListener(this);
         intColor = Settings.System.getInt(resolver,
@@ -240,19 +220,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment
                     getActivity().getContentResolver(), STATUS_BAR_DATE, statusBarDate);
             mStatusBarDate.setSummary(mStatusBarDate.getEntries()[index]);
             setStatusBarDateDependencies();
-            return true;
-	} else if (preference == mStatusBarWeather) {
-            int temperatureShow = Integer.valueOf((String) newValue);
-            int index = mStatusBarWeather.findIndexOfValue((String) newValue);
-            Settings.System.putIntForUser(getActivity().getContentResolver(),
-                    Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP,
-                    temperatureShow, UserHandle.USER_CURRENT);
-            if (temperatureShow == 0) {
-                mStatusBarWeather.setSummary(R.string.statusbar_weather_summary);
-            } else {
-                mStatusBarWeather.setSummary(
-                        mStatusBarWeather.getEntries()[index]);
-            }
             return true;
         } else if (preference == mStatusBarDateStyle) {
             int statusBarDateStyle = Integer.parseInt((String) newValue);
