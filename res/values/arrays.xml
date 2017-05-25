@@ -105,6 +105,7 @@
         <item>@string/hardware_keys_action_split_screen</item>
         <item>@string/hardware_keys_action_single_handed_left</item>
         <item>@string/hardware_keys_action_single_handed_right</item>
+        <item>@string/hardware_keys_action_screenshot</item>
     </string-array>
 
     <string-array name="hardware_keys_action_values" translatable="false">
@@ -120,6 +121,7 @@
         <item>9</item>
         <item>10</item>
         <item>11</item>
+        <item>12</item>
     </string-array>
 
     <string-array name="power_menu_actions_array" translatable="false">
@@ -204,13 +206,13 @@
         <item>@string/profile_action_disable</item>
         <item>@string/profile_action_enable</item>
     </string-array>
-    
+
     <string-array name="profile_doze_entries" translatable="false">
         <item>@string/profile_action_none</item>
         <item>@string/profile_action_enable</item>
         <item>@string/profile_action_disable</item>
     </string-array>
-    
+
     <string-array name="profile_notification_light_entries" translatable="false">
         <item>@string/profile_action_none</item>
         <item>@string/profile_action_enable</item>

@@ -101,7 +101,8 @@ public class ButtonSettings extends SettingsPreferenceFragment implements
         LAST_APP,
         SPLIT_SCREEN,
         SINGLE_HAND_LEFT,
-        SINGLE_HAND_RIGHT;
+        SINGLE_HAND_RIGHT,
+        SCREENSHOT;
 
         public static Action fromIntSafe(int id) {
             if (id < NOTHING.ordinal() || id > Action.values().length) {
