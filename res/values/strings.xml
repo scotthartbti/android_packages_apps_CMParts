@@ -560,6 +560,10 @@
     <!-- Status bar - Battery charging color -->
     <string name="battery_charging_color_title">Battery charging color</string>
 
+    <!-- Status bar - Battery saver color -->
+    <string name="status_bar_battery_saver_color_title">Battery saver color</string>
+    <string name="status_bar_battery_saver_color_summary">Note: If battery saver already enabled, for new color be effective, toggle battery saver!</string>
+
     <!-- Status bar - icon blacklist -->
     <string name="status_bar_icons_title">Status bar icons</string>
     <string name="status_bar_icons_summary">Control which status bar icons are shown</string>
